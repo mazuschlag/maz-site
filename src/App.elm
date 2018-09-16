@@ -1,7 +1,5 @@
 import Browser
-import Model exposing (init)
-import Update exposing (update)
-import View exposing (view)
+import Home exposing (init, update, view)
 
 main =
     Browser.sandbox { init = init, update = update, view = view }
