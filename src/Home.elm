@@ -1,60 +1,112 @@
-module Home exposing (init, update, view)
+module Home exposing (init, update, view, subscriptions, Model, Msg(..))
 
 import Html exposing (Html, div, h1, button, text, a, p)
 import Html.Attributes exposing (id, classList, href, target)
 import Html.Events exposing (onClick)
+import Browser.Navigation as Nav
+import Debug as Debug
+import Browser as Browser
+import Url as Url
 
 -- Model
 type alias Model = 
-    { greeting : String
+    { key : Nav.Key
+    , url : Url.Url
+    , home : Page
+    }
+
+type alias Page = 
+    { title : String
+    , greeting : String
     , info : String
-    , btnText : String
-    , githubText : String
-    , isEnglish : Bool }
+    , languageText : String
+    , href : String
+    , language : Language }
 
-init : Model
-init = toEnglish
+type Language = English | Japanese
 
-language : Model -> Model
-language model =
-    case model.isEnglish of
-        True  -> toJapanese
-        False -> toEnglish
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key = 
+    ( Model key url (loadPage url), Cmd.none )
 
-toEnglish : Model
-toEnglish = { greeting = "Hello, world!"
-            , info = "My name is Mark Zuschlag, a Software Engineer at MoxiWorks"
-            , btnText = "日本語"
-            , githubText = "Github"
-            , isEnglish = True }
+loadPage : Url.Url -> Page
+loadPage url =
+    case url.path of 
+        "/" -> toEnglish
+        "/jp" -> toJapanese
+        _ -> notFound 
 
-toJapanese : Model
-toJapanese = { greeting = "こんにちは、世界！"
-             , info = "MoxiWorksでソフトウェアエンジニアのマーク・ズッシュラク"
-             , btnText = "English"
-             , githubText = "Github"
-             , isEnglish = False }
+toLanguage : Page -> Page
+toLanguage home =
+    case home.language of
+        English  -> toJapanese
+        Japanese -> toEnglish
+
+toEnglish : Page
+toEnglish = 
+    { title = "Mark Zuschlag | Home"
+    , greeting = "Hello, world!"
+    , info = "My name is Mark Zuschlag, a Software Engineer at MoxiWorks"
+    , languageText = "日本語"
+    , href = "/jp"
+    , language = Japanese }
+
+toJapanese : Page
+toJapanese = 
+    { title = "マーク・ズッシュラク | ホーム"
+    , greeting = "こんにちは、世界！"
+    , info = "MoxiWorksでソフトウェアエンジニアのマーク・ズッシュラク"
+    , languageText = "English"
+    , href = "/"
+    , language = English }
+
+notFound : Page
+notFound = 
+    { title = "Mark Zuschlag"
+    , greeting = "Whoops!"
+    , info = "The requested page was not found"
+    , languageText = "日本語"
+    , href = "/jp"
+    , language = Japanese }
+
 
 -- Update
-type Msg = Language | Github
+type Msg 
+    = LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of 
-        Language -> 
-            language model
-        Github ->
-            model
+        LinkClicked urlRequest -> 
+            case urlRequest of 
+                Browser.Internal url ->
+                    ( { model | url = url, home = loadPage url } , Nav.pushUrl model.key (Url.toString url) )
+                Browser.External href ->
+                    ( model, Nav.load href )
+        UrlChanged url -> 
+            ( { model | url = url, home = loadPage url }, Cmd.none )
+
+            
+
+-- Subscriptions
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+  Sub.none
 
 -- View
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model = 
-    div [ (id "home"), (classList [ ("page", True) ]) ] 
-        [ h1 [] [ text model.greeting ]
-        , p [] [ text model.info ]
-        , button [ onClick Language ] [ text ( model.btnText ) ]
-        , a [ (href githubLink), (target "_blank") ] [ text ( model.githubText ) ]
+    { title = model.home.title
+    , body = 
+        [ div [ (id "home"), (classList [ ("page", True) ]) ] 
+            [ h1 [] [ text model.home.greeting ]
+            , p [] [ text model.home.info ]
+            , a [ (href model.home.href) ] [ text ( model.home.languageText ) ]
+            , a [ (href githubLink), (target "_blank") ] [ text ( "Github" ) ]
+            ]
         ]
+    }
 
 githubLink : String
 githubLink = "https://github.com/mazuschlag"
