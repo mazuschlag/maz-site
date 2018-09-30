@@ -21,6 +21,7 @@ type alias Page =
     , info : String
     , languageText : String
     , href : String
+    , resume : String
     , language : Language }
 
 type Language = English | Japanese
@@ -49,15 +50,17 @@ toEnglish =
     , info = "My name is Mark Zuschlag, a Software Engineer at MoxiWorks"
     , languageText = "日本語"
     , href = "/jp"
+    , resume = "Resume"
     , language = Japanese }
 
 toJapanese : Page
 toJapanese = 
     { title = "マーク・ズッシュラク | ホーム"
     , greeting = "こんにちは、世界！"
-    , info = "MoxiWorksでソフトウェアエンジニアのマーク・ズッシュラク"
+    , info = " MoxiWorksでソフトウェアエンジニアのマーク・ズッシュラク"
     , languageText = "English"
     , href = "/"
+    , resume = "履歴書(英語)"
     , language = English }
 
 notFound : Page
@@ -65,9 +68,10 @@ notFound =
     { title = "Mark Zuschlag"
     , greeting = "Whoops!"
     , info = "The requested page was not found"
-    , languageText = "日本語"
-    , href = "/jp"
-    , language = Japanese }
+    , languageText = "Home"
+    , href = "/"
+    , resume = ""
+    , language = English }
 
 
 -- Update
@@ -99,14 +103,26 @@ view : Model -> Browser.Document Msg
 view model = 
     { title = model.home.title
     , body = 
-        [ div [ (id "home"), (classList [ ("page", True) ]) ] 
-            [ h1 [] [ text model.home.greeting ]
-            , p [] [ text model.home.info ]
-            , a [ (href model.home.href) ] [ text ( model.home.languageText ) ]
-            , a [ (href githubLink), (target "_blank") ] [ text ( "Github" ) ]
+        [ div [ (id "pg"), (classList [ ("page", True) ]) ] 
+            [ div [ (id "content") ] 
+                [ h1 [ (id "greeting") ] [ text model.home.greeting ]
+                , p [ (id "info") ] [ text model.home.info ]
+                , div [ (id "links")] 
+                    [ a [ (href githubLink), (target "_blank"), (classList [ ("link", True) ]) ] [ text ( "Github" ) ]
+                    , a [ (href linkedInLink), (target "_blank"), (classList [ ("link", True) ]) ] [ text ( "LinkedIn" ) ]
+                    , a [ (href resumeLink), (target "_blank"), (classList [ ("link", True) ]) ] [ text ( model.home.resume ) ]
+                    , a [ (href model.home.href), (classList [ ("link", True) ]) ] [ text ( model.home.languageText ) ]
+                    ]
+                ]
             ]
         ]
     }
 
 githubLink : String
 githubLink = "https://github.com/mazuschlag"
+
+linkedInLink : String
+linkedInLink = "https://www.linkedin.com/in/mark-zuschlag/"
+
+resumeLink : String
+resumeLink = "/assets/zuschlag_mark_resume.pdf"
