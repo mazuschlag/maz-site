@@ -4,3 +4,4 @@ elm-stuff
 repl-temp-*
 # distribution
 dist/elm.js
+assets

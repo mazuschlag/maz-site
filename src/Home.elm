@@ -1,7 +1,7 @@
 module Home exposing (init, update, view, subscriptions, Model, Msg(..))
 
-import Html exposing (Html, div, h1, button, text, a, p)
-import Html.Attributes exposing (id, classList, href, target)
+import Html exposing (Html, div, h1, button, text, a, p, img)
+import Html.Attributes exposing (id, classList, href, target, src)
 import Html.Events exposing (onClick)
 import Browser.Navigation as Nav
 import Debug as Debug
@@ -47,7 +47,7 @@ toEnglish : Page
 toEnglish = 
     { title = "Mark Zuschlag | Home"
     , greeting = "Hello, world!"
-    , info = "My name is Mark Zuschlag, a Software Engineer at MoxiWorks"
+    , info = "My name is Mark Zuschlag, a Software Engineer at "
     , languageText = "日本語"
     , href = "/jp"
     , resume = "Resume"
@@ -57,7 +57,7 @@ toJapanese : Page
 toJapanese = 
     { title = "マーク・ズッシュラク | ホーム"
     , greeting = "こんにちは、世界！"
-    , info = " MoxiWorksでソフトウェアエンジニアのマーク・ズッシュラク"
+    , info = "でソフトウェアエンジニアのマーク・ズッシュラク"
     , languageText = "English"
     , href = "/"
     , resume = "履歴書(英語)"
@@ -103,26 +103,58 @@ view : Model -> Browser.Document Msg
 view model = 
     { title = model.home.title
     , body = 
-        [ div [ (id "pg"), (classList [ ("page", True) ]) ] 
-            [ div [ (id "content") ] 
-                [ h1 [ (id "greeting") ] [ text model.home.greeting ]
-                , p [ (id "info") ] [ text model.home.info ]
-                , div [ (id "links")] 
-                    [ a [ (href githubLink), (target "_blank"), (classList [ ("link", True) ]) ] [ text ( "Github" ) ]
-                    , a [ (href linkedInLink), (target "_blank"), (classList [ ("link", True) ]) ] [ text ( "LinkedIn" ) ]
-                    , a [ (href resumeLink), (target "_blank"), (classList [ ("link", True) ]) ] [ text ( model.home.resume ) ]
-                    , a [ (href model.home.href), (classList [ ("link", True) ]) ] [ text ( model.home.languageText ) ]
+        [ div [ id "pg", classList [ ("page", True) ] ] 
+            [ div [ id "content" ] 
+                [ img [ src imageLink, classList [("main-img", True)] ] []
+                , div [ id "words" ] 
+                    [ h1 [ id "greeting" ] [ text model.home.greeting ]
+                    , div [ id "infos" ] [ information model ]
+                    , div [ id "links" ] 
+                        [ a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text "Github" ]
+                        , a [ href linkedInLink, target "_blank", classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text "LinkedIn" ]
+                        , a [ href resumeLink, target "_blank", classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text model.home.resume ]
+                        , a [ href model.home.href, classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text model.home.languageText ]
+                        ]
                     ]
                 ]
             ]
         ]
     }
 
+information : Model -> Html Msg
+information model = 
+    case model.home.language of 
+        Japanese ->  p [ classList [ ("info", True), ("info-size", True) ] ] (englishInfo model.home.info)
+        English -> p [ classList [ ("info", True), ("info-size", True) ] ] (japaneseInfo model.home.info)
+
+englishInfo : String -> List (Html Msg)
+englishInfo info = [ text info
+                   , a [ href moxiLink
+                        , target "_blank"
+                        , classList [ ("magic-underline", True), ("info", True), ("moxi-size", True) ]
+                        ] [ text "MoxiWorks." ]
+                   ]
+
+japaneseInfo : String -> List (Html Msg)
+japaneseInfo info = [ a [ href moxiLink
+                         , target "_blank"
+                         , classList [ ("magic-underline", True), ("info", True), ("moxi-size", True) ]
+                         ] [ text "MoxiWorks" ]
+                    , text info 
+                    ]
+
+
+moxiLink : String
+moxiLink = "https://moxiworks.com/"
+
 githubLink : String
 githubLink = "https://github.com/mazuschlag"
 
 linkedInLink : String
 linkedInLink = "https://www.linkedin.com/in/mark-zuschlag/"
+
+imageLink : String
+imageLink = "/assets/pic2edit.png"
 
 resumeLink : String
 resumeLink = "/assets/zuschlag_mark_resume.pdf"
