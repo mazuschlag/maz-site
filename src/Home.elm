@@ -20,6 +20,8 @@ type alias Page =
     , greeting : String
     , info : String
     , moreInfo : String
+    , functionalInfo : String
+    , duckInfo : String
     , languageText : String
     , href : String
     , resume : String
@@ -50,7 +52,9 @@ toEnglish =
     { title = "Mark Zuschlag | Home"
     , greeting = "Hello, world!"
     , info = "My name is Mark Zuschlag, a Software Engineer at "
-    , moreInfo = ". I love building backend services, experimenting with functional programming, and consulting rubber ducks."
+    , moreInfo = ". I love building backend services, experimenting with "
+    , functionalInfo = ", and consulting "
+    , duckInfo = "."
     , languageText = "日本語"
     , href = "/jp"
     , resume = "Resume"
@@ -61,10 +65,12 @@ toJapanese =
     { title = "マーク・ズッシュラク | ホーム"
     , greeting = "こんにちは、世界！"
     , info = "でソフトウェアエンジニアのマーク・ズッシュラク。"
-    , moreInfo = "バックエンドを作ったり、関数型言語の実験をしたり、ラバーダックと相談してくれたりすることが好きである。"
+    , moreInfo = "バックエンドを作ったり、"
+    , functionalInfo = "の実験をしたり、"
+    , duckInfo = "と相談してくれたりすることが好きである。"
     , languageText = "English"
     , href = "/"
-    , resume = "履歴書(英語)"
+    , resume = "履歴書"
     , language = English }
 
 notFound : Page
@@ -73,6 +79,8 @@ notFound =
     , greeting = "Whoops!"
     , info = "The requested page was not found"
     , moreInfo = ""
+    , functionalInfo = ""
+    , duckInfo = ""
     , languageText = "Home"
     , href = "/"
     , resume = ""
@@ -122,9 +130,9 @@ view model =
 information : Model -> List (Html Msg)
 information model = 
     case model.home.language of 
-        Japanese ->  [ p [ id "info-one", classList [ ("info", True), ("info-size", True) ] ] (englishInfo model.home) ]
-        English -> [ p [ id "info-one", classList [ ("info", True), ("info-size", True) ] ] (japaneseInfo model.home) ]
-        NotFound -> [ p [ id "first-info", classList [ ("info", True), ("info-size", True) ] ] (notFoundInfo model.home) ]
+        Japanese ->  [ p [ id "info", classList [ ("info", True), ("info-size", True) ] ] (englishInfo model.home) ]
+        English -> [ p [ id "info", classList [ ("info", True), ("info-size", True) ] ] (japaneseInfo model.home) ]
+        NotFound -> [ p [ id "info", classList [ ("info", True), ("info-size", True) ] ] (notFoundInfo model.home) ]
 
 links : Model -> List (Html Msg)
 links model = 
@@ -142,19 +150,39 @@ englishInfo : Page -> List (Html Msg)
 englishInfo page = [ text page.info
                    , a [ href moxiLink
                         , target "_blank"
-                        , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("moxi-size", True) ]
+                        , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("moxi", True) ]
                         ] [ text "MoxiWorks" ]
                    , text page.moreInfo
+                   , a [ href functionalLink
+                        , target "_blank"
+                        , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("functional", True) ] 
+                        ] [ text "functional programming"]
+                   , text page.functionalInfo
+                   , a [ href duckLink
+                        , target "_blank"
+                        , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("duck", True) ] 
+                        ] [ text "rubber ducks"]
+                   , text page.duckInfo
                    ]
 
 japaneseInfo : Page -> List (Html Msg)
 japaneseInfo page = [ a [ href moxiLink
                          , target "_blank"
-                         , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("moxi-size", True) ]
+                         , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("moxi", True) ]
                          ] [ text "MoxiWorks" ]
                     , text page.info 
                     , text page.moreInfo
-                    ]
+                    , a [ href functionalLink
+                        , target "_blank"
+                        , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("functional", True) ] 
+                        ] [ text "関数型プログラミング"]
+                   , text page.functionalInfo
+                   , a [ href duckLink
+                        , target "_blank"
+                        , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("duck", True) ] 
+                        ] [ text "ラバーダック"]
+                   , text page.duckInfo
+                   ]
 
 notFoundInfo : Page -> List (Html Msg)
 notFoundInfo page = [ text page.info ]
@@ -189,6 +217,12 @@ notFoundLinks model = [ a [ href githubLink, target "_blank", classList [ ("info
 moxiLink : String
 moxiLink = "https://moxiworks.com/"
 
+functionalLink : String
+functionalLink = "https://www.haskell.org/"
+
+duckLink : String
+duckLink = "https://en.wikipedia.org/wiki/Rubber_duck_debugging"
+
 githubLink : String
 githubLink = "https://github.com/mazuschlag"
 
@@ -196,7 +230,7 @@ linkedInLink : String
 linkedInLink = "https://www.linkedin.com/in/mark-zuschlag/"
 
 imageLink : String
-imageLink = "/assets/pic3edit.png"
+imageLink = "/assets/zuschlag_mark.png"
 
 resumeLink : String
 resumeLink = "/assets/zuschlag_mark_resume.pdf"

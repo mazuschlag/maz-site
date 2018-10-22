@@ -57,10 +57,6 @@ html, body {
     font-size: 1.5em;
 }
 
-.moxi-size {
-    font-size: 1em;
-}
-
 .link {
     font-size: 1.25em;
     font-weight: 300;
@@ -92,12 +88,12 @@ html, body {
 }
 
 .resume:hover, .resume:focus {
-    color: #e2b900;
+    color: #115740;
 }
 
 .resume:before, .resume:after,
 .resume-label:before, .resume-label:after {
-    background-color: #e2b900;
+    background-color: #115740;
 }
 
 .language:hover, .language:focus {
@@ -170,8 +166,22 @@ html, body {
     background-repeat: no-repeat;
     background-size: 100% 0.5em;
     background-position: 0 1.25em;
-    display: inline-block;
+}
+
+.moxi {
     background-image: linear-gradient(to right, #377abc, #377abc 100%);
+}
+
+.functional {
+    background-image: linear-gradient(to right, #5e5086, #5e5086 100%);
+}
+
+.duck {
+    background-image: linear-gradient(to right, #edd209, #edd209 100%);
+}
+
+.moxi, .functional, .duck {
+    font-size: 1em;
 }
 
 .magic-underline:hover {
@@ -180,54 +190,62 @@ html, body {
     background-position: 0 0.125em;
 }
 
-@media screen and (max-device-width : 500px)
+@media screen and (max-device-width : 900px)
 {
+    #content {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    #greeting {
+        display: block;
+        text-align: center;
+        font-size: 2em;
+        margin-top: 1em;
+    }
+
+    #infos {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    #info {
+        display: block;
+        text-align: center;
+        margin-bottom: 1.5em;
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+
+    #links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
     .main-img {
-        width: 50em;
-        margin-right: 2em;
+        width: 12em;
+        margin-right: 0em;
+        margin-top: 1em;
     }
     
     .notfound-img {
-        width: 50em;
-        margin-right: 2em;
+        width: 15em;
+        margin-right: 0em;
+        margin-top: 1em;
     }
 
     .info-size {
-        font-size: 1.5em;
+        font-size: 1.1em;
     }
     
-    .moxi-size {
+    .moxi, .functional, .duck {
         font-size: 1em;
     }
     
     .link {
-        font-size: 1.25em;
-        font-weight: 300;
-    }
-}
-
-@media screen and (min-device-width : 501px) and (max-device-width : 900px)
-{
-    .main-img {
-        width: 50em;
-        margin-right: 2em;
-    }
-    
-    .notfound-img {
-        width: 50em;
-        margin-right: 2em;
-    }
-
-    .info-size {
-        font-size: 1.5em;
-    }
-    
-    .moxi-size {
         font-size: 1em;
-    }
-    
-    .link {
-        font-size: 1.25em;
         font-weight: 300;
     }
 }
