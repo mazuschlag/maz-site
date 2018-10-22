@@ -1,6 +1,6 @@
 module Home exposing (init, update, view, subscriptions, Model, Msg(..))
 
-import Html exposing (Html, div, h1, button, text, a, p, img)
+import Html exposing (Html, div, h1, button, text, a, p, img, span)
 import Html.Attributes exposing (id, classList, href, target, src)
 import Html.Events exposing (onClick)
 import Browser.Navigation as Nav
@@ -19,12 +19,13 @@ type alias Page =
     { title : String
     , greeting : String
     , info : String
+    , moreInfo : String
     , languageText : String
     , href : String
     , resume : String
     , language : Language }
 
-type Language = English | Japanese
+type Language = English | Japanese | NotFound
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key = 
@@ -42,12 +43,14 @@ toLanguage home =
     case home.language of
         English  -> toJapanese
         Japanese -> toEnglish
+        NotFound -> toJapanese
 
 toEnglish : Page
 toEnglish = 
     { title = "Mark Zuschlag | Home"
     , greeting = "Hello, world!"
     , info = "My name is Mark Zuschlag, a Software Engineer at "
+    , moreInfo = ". I love building backend services, experimenting with functional programming, and consulting rubber ducks."
     , languageText = "日本語"
     , href = "/jp"
     , resume = "Resume"
@@ -57,7 +60,8 @@ toJapanese : Page
 toJapanese = 
     { title = "マーク・ズッシュラク | ホーム"
     , greeting = "こんにちは、世界！"
-    , info = "でソフトウェアエンジニアのマーク・ズッシュラク"
+    , info = "でソフトウェアエンジニアのマーク・ズッシュラク。"
+    , moreInfo = "バックエンドを作ったり、関数型言語の実験をしたり、ラバーダックと相談してくれたりすることが好きである。"
     , languageText = "English"
     , href = "/"
     , resume = "履歴書(英語)"
@@ -68,10 +72,11 @@ notFound =
     { title = "Mark Zuschlag"
     , greeting = "Whoops!"
     , info = "The requested page was not found"
+    , moreInfo = ""
     , languageText = "Home"
     , href = "/"
     , resume = ""
-    , language = English }
+    , language = NotFound }
 
 
 -- Update
@@ -91,8 +96,6 @@ update msg model =
         UrlChanged url -> 
             ( { model | url = url, home = loadPage url }, Cmd.none )
 
-            
-
 -- Subscriptions
 subscriptions : Model -> Sub Msg
 subscriptions _ =
@@ -105,45 +108,84 @@ view model =
     , body = 
         [ div [ id "pg", classList [ ("page", True) ] ] 
             [ div [ id "content" ] 
-                [ img [ src imageLink, classList [("main-img", True)] ] []
+                [ img [ src imageLink, classList [ imageClass model.home.language ] ] []
                 , div [ id "words" ] 
                     [ h1 [ id "greeting" ] [ text model.home.greeting ]
-                    , div [ id "infos" ] [ information model ]
-                    , div [ id "links" ] 
-                        [ a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text "Github" ]
-                        , a [ href linkedInLink, target "_blank", classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text "LinkedIn" ]
-                        , a [ href resumeLink, target "_blank", classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text model.home.resume ]
-                        , a [ href model.home.href, classList [ ("info", True), ("link", True), ("magic-underline", True) ] ] [ text model.home.languageText ]
-                        ]
+                    , div [ id "infos" ] (information model)
+                    , div [ id "links" ] (links model)
                     ]
                 ]
             ]
         ]
     }
 
-information : Model -> Html Msg
+information : Model -> List (Html Msg)
 information model = 
     case model.home.language of 
-        Japanese ->  p [ classList [ ("info", True), ("info-size", True) ] ] (englishInfo model.home.info)
-        English -> p [ classList [ ("info", True), ("info-size", True) ] ] (japaneseInfo model.home.info)
+        Japanese ->  [ p [ id "info-one", classList [ ("info", True), ("info-size", True) ] ] (englishInfo model.home) ]
+        English -> [ p [ id "info-one", classList [ ("info", True), ("info-size", True) ] ] (japaneseInfo model.home) ]
+        NotFound -> [ p [ id "first-info", classList [ ("info", True), ("info-size", True) ] ] (notFoundInfo model.home) ]
 
-englishInfo : String -> List (Html Msg)
-englishInfo info = [ text info
+links : Model -> List (Html Msg)
+links model = 
+    case model.home.language of 
+        NotFound -> notFoundLinks model
+        _ -> normalLinks model
+
+imageClass : Language -> (String, Bool)
+imageClass language =
+    case language of 
+        NotFound -> ("notfound-img", True)
+        _ -> ("main-img", True)
+
+englishInfo : Page -> List (Html Msg)
+englishInfo page = [ text page.info
                    , a [ href moxiLink
                         , target "_blank"
-                        , classList [ ("magic-underline", True), ("info", True), ("moxi-size", True) ]
-                        ] [ text "MoxiWorks." ]
+                        , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("moxi-size", True) ]
+                        ] [ text "MoxiWorks" ]
+                   , text page.moreInfo
                    ]
 
-japaneseInfo : String -> List (Html Msg)
-japaneseInfo info = [ a [ href moxiLink
+japaneseInfo : Page -> List (Html Msg)
+japaneseInfo page = [ a [ href moxiLink
                          , target "_blank"
-                         , classList [ ("magic-underline", True), ("info", True), ("moxi-size", True) ]
+                         , classList [ ("underline", True), ("magic-underline", True), ("info", True), ("moxi-size", True) ]
                          ] [ text "MoxiWorks" ]
-                    , text info 
+                    , text page.info 
+                    , text page.moreInfo
+                    ]
+
+notFoundInfo : Page -> List (Html Msg)
+notFoundInfo page = [ text page.info ]
+
+normalLinks : Model -> List (Html Msg)
+normalLinks model = [ a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("github", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("github-label", True) ] ] [ text "Github" ] 
+                        ]
+                    , a [ href linkedInLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("linkedin", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("linkedin-label", True) ] ] [ text "LinkedIn"]
+                        ]
+                    , a [ href resumeLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("resume", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("resume-label", True) ] ] [ text model.home.resume ]
+                        ]
+                    , a [ href model.home.href, classList [ ("info", True), ("link", True), ("hover1", True), ("language", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("language-label", True) ] ] [text model.home.languageText ] 
+                        ]
                     ]
 
 
+notFoundLinks : Model -> List (Html Msg)
+notFoundLinks model = [ a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("github", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("github-label", True) ] ] [ text "Github" ] 
+                        ]
+                    , a [ href linkedInLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("linkedin", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("linkedin-label", True) ] ] [ text "LinkedIn"]
+                        ]
+                    , a [ href model.home.href, classList [ ("info", True), ("link", True), ("hover1", True), ("language", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("language-label", True) ] ] [text model.home.languageText ] 
+                        ]
+                    ]
 moxiLink : String
 moxiLink = "https://moxiworks.com/"
 
@@ -154,7 +196,7 @@ linkedInLink : String
 linkedInLink = "https://www.linkedin.com/in/mark-zuschlag/"
 
 imageLink : String
-imageLink = "/assets/pic2edit.png"
+imageLink = "/assets/pic3edit.png"
 
 resumeLink : String
 resumeLink = "/assets/zuschlag_mark_resume.pdf"
