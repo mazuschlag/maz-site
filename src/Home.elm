@@ -230,7 +230,7 @@ linkedInLink : String
 linkedInLink = "https://www.linkedin.com/in/mark-zuschlag/"
 
 imageLink : String
-imageLink = "/assets/zuschlag_mark.png"
+imageLink = "zuschlag_mark.png"
 
 resumeLink : String
-resumeLink = "/assets/zuschlag_mark_resume.pdf"
+resumeLink = "zuschlag_mark_resume.pdf"
