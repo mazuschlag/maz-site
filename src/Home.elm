@@ -189,7 +189,7 @@ notFoundInfo page = [ text page.info ]
 
 normalLinks : Model -> List (Html Msg)
 normalLinks model = [  a [ href emailLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("email", True) ] ] 
-                        [ span [ classList [ ("hover1-label", True), ("linkedin-label", True) ] ] [ text "Email Me"]
+                        [ span [ classList [ ("hover1-label", True), ("email-label", True) ] ] [ text "Email Me"]
                         ]
                     ,  a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("github", True) ] ] 
                         [ span [ classList [ ("hover1-label", True), ("github-label", True) ] ] [ text "Github" ] 
