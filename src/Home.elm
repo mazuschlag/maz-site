@@ -188,10 +188,13 @@ notFoundInfo : Page -> List (Html Msg)
 notFoundInfo page = [ text page.info ]
 
 normalLinks : Model -> List (Html Msg)
-normalLinks model = [ a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("github", True) ] ] 
+normalLinks model = [  a [ href emailLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("email", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("linkedin-label", True) ] ] [ text "Email Me"]
+                        ]
+                    ,  a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("github", True) ] ] 
                         [ span [ classList [ ("hover1-label", True), ("github-label", True) ] ] [ text "Github" ] 
                         ]
-                    , a [ href linkedInLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("linkedin", True) ] ] 
+                    ,  a [ href linkedInLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("linkedin", True) ] ] 
                         [ span [ classList [ ("hover1-label", True), ("linkedin-label", True) ] ] [ text "LinkedIn"]
                         ]
                     , a [ href resumeLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("resume", True) ] ] 
@@ -225,6 +228,9 @@ duckLink = "https://en.wikipedia.org/wiki/Rubber_duck_debugging"
 
 githubLink : String
 githubLink = "https://github.com/mazuschlag"
+
+email : String
+emailLink = "mailto: markazuschlag@gmail.com"
 
 linkedInLink : String
 linkedInLink = "https://www.linkedin.com/in/mark-zuschlag/"
