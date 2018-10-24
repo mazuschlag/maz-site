@@ -87,6 +87,15 @@ html, body {
     background-color: #0073b1;
 }
 
+.email:hover, .email:focus {
+    color: #9D8DF1;
+}
+
+.email:before, .email:after,
+.email-label:before, .email-label:after {
+    background-color: #9D8DF1;
+}
+
 .resume:hover, .resume:focus {
     color: #115740;
 }
