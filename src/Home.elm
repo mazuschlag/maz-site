@@ -25,6 +25,7 @@ type alias Page =
     , languageText : String
     , href : String
     , resume : String
+    , email : String
     , language : Language }
 
 type Language = English | Japanese | NotFound
@@ -58,6 +59,7 @@ toEnglish =
     , languageText = "日本語"
     , href = "/jp"
     , resume = "Resume"
+    , email = "Email Me"
     , language = Japanese }
 
 toJapanese : Page
@@ -71,6 +73,7 @@ toJapanese =
     , languageText = "English"
     , href = "/"
     , resume = "履歴書"
+    , email = "メール"
     , language = English }
 
 notFound : Page
@@ -84,6 +87,7 @@ notFound =
     , languageText = "Home"
     , href = "/"
     , resume = ""
+    , email = ""
     , language = NotFound }
 
 
@@ -188,10 +192,7 @@ notFoundInfo : Page -> List (Html Msg)
 notFoundInfo page = [ text page.info ]
 
 normalLinks : Model -> List (Html Msg)
-normalLinks model = [  a [ href emailLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("email", True) ] ] 
-                        [ span [ classList [ ("hover1-label", True), ("email-label", True) ] ] [ text "Email Me"]
-                        ]
-                    ,  a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("github", True) ] ] 
+normalLinks model = [   a [ href githubLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("github", True) ] ] 
                         [ span [ classList [ ("hover1-label", True), ("github-label", True) ] ] [ text "Github" ] 
                         ]
                     ,  a [ href linkedInLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("linkedin", True) ] ] 
@@ -199,6 +200,9 @@ normalLinks model = [  a [ href emailLink, target "_blank", classList [ ("info",
                         ]
                     , a [ href resumeLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("resume", True) ] ] 
                         [ span [ classList [ ("hover1-label", True), ("resume-label", True) ] ] [ text model.home.resume ]
+                        ]
+                    , a [ href emailLink, target "_blank", classList [ ("info", True), ("link", True), ("hover1", True), ("email", True) ] ] 
+                        [ span [ classList [ ("hover1-label", True), ("email-label", True) ] ] [ text model.home.email ]
                         ]
                     , a [ href model.home.href, classList [ ("info", True), ("link", True), ("hover1", True), ("language", True) ] ] 
                         [ span [ classList [ ("hover1-label", True), ("language-label", True) ] ] [text model.home.languageText ] 
@@ -229,7 +233,7 @@ duckLink = "https://en.wikipedia.org/wiki/Rubber_duck_debugging"
 githubLink : String
 githubLink = "https://github.com/mazuschlag"
 
-email : String
+emailLink : String
 emailLink = "mailto: markazuschlag@gmail.com"
 
 linkedInLink : String

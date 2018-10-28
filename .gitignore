@@ -4,3 +4,5 @@ elm-stuff
 repl-temp-*
 # distribution
 node_modules
+dist
+public/elm.min.js

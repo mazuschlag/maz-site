@@ -19,7 +19,9 @@ html, body {
 }
 
 .main-img {
-    width: 35%;
+    width: 70%;
+    max-width: 300px;
+    height: auto;
     margin-right: 2em;
 }
 
@@ -88,12 +90,12 @@ html, body {
 }
 
 .email:hover, .email:focus {
-    color: #9D8DF1;
+    color: #f97909;
 }
 
 .email:before, .email:after,
 .email-label:before, .email-label:after {
-    background-color: #9D8DF1;
+    background-color: #f97909;
 }
 
 .resume:hover, .resume:focus {
